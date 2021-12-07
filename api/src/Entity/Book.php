@@ -12,14 +12,39 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
+use Symfony\Component\Serializer\Annotation\Groups;
+
+
 #[ORM\Entity(repositoryClass: BookRepository::class)]
-#[ApiResource(itemOperations: ['get', 'put', 'delete'])]
+
+#[ApiResource(
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']],
+    itemOperations: ['get', 'put', 'delete',         
+    
+        'get' => [
+        
+            'path' => '/livre/{id}',
+
+            'requirements' => ['id' => '\d+'],
+
+            'defaults' => ['color' => 'brown'],
+
+            'options' => ['my_option' => 'my_option_value'],
+
+            'schemes' => ['https'],
+
+            'host' => '{subdomain}.api-platform.com',
+
+        ]
+    ]
+)]
 
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial'])]
 #[ApiFilter(DateFilter::class, properties: ['createdAt'])]
 #[ApiFilter(BooleanFilter::class, properties: ['available'])]
-
 #[ApiFilter(OrderFilter::class, properties: ['title'], arguments: ['orderParameterName' => 'order'])]
+
 
 class Book
 {
@@ -38,6 +63,7 @@ class Book
     private $author;
 
     #[ORM\Column(type: 'date', length: 255)]
+    #[Groups(["read"])]
     private $createdAt;
 
     #[ORM\Column(type: 'boolean')]
