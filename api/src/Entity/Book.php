@@ -7,11 +7,13 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 #[ApiResource(itemOperations: ['get', 'put', 'delete'])]
 
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial'])]
+#[ApiFilter(DateFilter::class, properties: ['createdAt'])]
 
 class Book
 {
@@ -28,6 +30,9 @@ class Book
 
     #[ORM\Column(type: 'string', length: 255)]
     private $author;
+
+    #[ORM\Column(type: 'date', length: 255)]
+    private $createdAt;
 
     public function getId(): ?int
     {
@@ -66,6 +71,18 @@ class Book
     public function setAuthor(string $author): self
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?date
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(int $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
