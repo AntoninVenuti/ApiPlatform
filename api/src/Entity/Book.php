@@ -8,12 +8,14 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 #[ApiResource(itemOperations: ['get', 'put', 'delete'])]
 
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial'])]
 #[ApiFilter(DateFilter::class, properties: ['createdAt'])]
+#[ApiFilter(BooleanFilter::class, properties: ['available'])]
 
 class Book
 {
@@ -33,6 +35,10 @@ class Book
 
     #[ORM\Column(type: 'date', length: 255)]
     private $createdAt;
+
+    #[ORM\Column(type: 'boolean')]
+    private $available;
+
 
     public function getId(): ?int
     {
@@ -83,6 +89,18 @@ class Book
     public function setCreatedAt(int $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getAvailable(): ?bool
+    {
+        return $this->available;
+    }
+
+    public function setAvailable(bool $available): self
+    {
+        $this->available = $available;
 
         return $this;
     }
